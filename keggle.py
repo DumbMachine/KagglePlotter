@@ -56,13 +56,14 @@ for column in df.columns:
 
 
 app.layout = html.Div([
-    dcc.Graph(id='graph'),
+    dcc.Graph(id='graph'),html.Div([
+    dcc.Dropdown(id="tipe",options=[{'label': i, 'value': i} for i in ['LinearRegression', 'Classification']] , value = "LinearRegression")]),
     html.Div([
-    dcc.Dropdown(id="drop1", options = drop1_options , value = drop1_options[0]["value"]),
-    dcc.Dropdown(id="drop2", options = drop2_options , value = drop2_options[0]["value"]),
+    html.Div([dcc.Dropdown(id="drop1", options = drop1_options , value = drop1_options[0]["value"]),
+    dcc.Dropdown(id="drop2", options = drop2_options , value = drop2_options[0]["value"])]),
     dcc.RadioItems(
                 id='radio',
-                options=[{'label': i, 'value': i} for i in ['LinearRegression', 'NoLinearRegression']],
+                options=[{'label': i, 'value': i} for i in ['ShowLine', 'NotShowLine']],
                 value='Linear',
                 labelStyle={'display': 'inline-block'}
             )
@@ -70,8 +71,8 @@ app.layout = html.Div([
 ])
 
 @app.callback(Output('graph' , 'figure'),
-              [Input('drop1','value'),Input('drop2', 'value'),Input('radio','value')])
-def update_figure(column1,column2,radio):
+              [Input('tipe','value'),Input('drop1','value'),Input('drop2', 'value'),Input('radio','value')])
+def update_figure(tipe,column1,column2,radio):
     df.dropna(inplace=True)
     x = df[column1]
     y = df[column2]
@@ -86,7 +87,7 @@ def update_figure(column1,column2,radio):
                 'line': {'width': 0.5, 'color': 'white'}
             }
     ))
-    if radio =="LinearRegression":
+    if radio =="ShowLine":
         x1= x.values.reshape(-1,1)
         y1=y.values
 #        scaler = StandardScaler().fit(x1)
