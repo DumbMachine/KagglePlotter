@@ -1,56 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jan  7 16:07:00 2019
-
-@author: ratin
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jan  6 09:52:57 2019
-
-@author: ratin
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jan  6 03:08:49 2019
-
-@author: ratin
-"""
-
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output
-import plotly.graph_objs as go
-import pandas as pd
-from subprocess import check_output
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LinearRegression
-import numpy as np
-import matplotlib.pyplot as plt
-
-print("asd")
-#-----------------------------------------------------------------------------
-
-
-
-
-
-def downloader(name):
-    #selector = body > div.site-layout > div.site-layout__main-content > div > div > div > div.dataset-data > div.dataset-data__content > div > div.content-box > div:nth-child(1) > div > div.content-box__right-side > div > div:nth-child(1) > div > div.StyledHintDetailed-QHccL.lcVvAz.Wrapper-bMigRJ.fSdEhz.ApiHintContainer-eyqxAC.ciYWV > span.tooltip-multiline.StyledTooltip-fWedUV.efsxir.CenteredToolTip-gSyOaz.fCfSkP > button > div
-
-    if name.split()[0]=='kaggle': ##Implies API call
-        try:
-            print(check_output(name , shell=True).decode())
-        except:
-            print("Some unknown err occured")
-    else:
-        print("passed parameter should start with \"kaggle\"")
-
-
 app = dash.Dash()
 df = pd.read_csv("winequalityN.csv")
 
@@ -133,6 +80,19 @@ def update_figure(tipe,column1,column2,radio):
             }
     ))
         
+    elif tipe == "Line":
+        traces.append(go.Scatter(
+        x = x,
+        y = y,
+        mode= "lines",
+        line = dict(
+        color = ('rgb(0, 0, 0)'),
+        width = 4,
+        dash = 'dash')
+        )
+    )
+        
+        
     if radio =="ShowLine":
         x1= x.values.reshape(-1,1)
         y1=y.values
@@ -167,6 +127,3 @@ def update_figure(tipe,column1,column2,radio):
 if __name__=="__main__":
     app.run_server()
     
-    
-
-
