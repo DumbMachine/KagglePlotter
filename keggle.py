@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Mon Jan  7 16:07:00 2019
+
+@author: ratin
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Sun Jan  6 09:52:57 2019
 
 @author: ratin
@@ -88,15 +95,40 @@ def update_figure(tipe,column1,column2,radio):
                 'line': {'width': 0.5, 'color': 'white'}
             }
     ))
-    #TODO: size multiplier will also be an input from the user.
+        
+    elif tipe=="Boxplots":
+        trace0 = go.Box(
+            y=x,
+            name = column2
+        )
+        trace1 = go.Box(
+            y=y,
+            name = column1
+        )
+        traces.append(trace0)
+        traces.append(trace1)
+        col = column2
+        if df[column1].mean()>df[column2].mean():
+            col = column1
+        
+        return {'data': traces , 'layout': go.Layout(
+                    yaxis=dict(
+                        range=[df[col].min(), df[col].max()]
+                    )
+                )}
+
+       
+        
     elif tipe == "Bubble":
         traces.append(go.Scatter(
         x = x,
         y = y,
         mode= "markers",
         marker={
-                'size': 5*df["alcohol"],
-                'opacity': 0.5,
+                'size': 3*df["alcohol"], #TODO: 3*df[choice_column]
+                'color' : df["alcohol"],
+                'opacity': 0.3,
+                'showscale' : True,
                 'line': {'width': 0.5, 'color': 'white'}
             }
     ))
@@ -116,7 +148,11 @@ def update_figure(tipe,column1,column2,radio):
         traces.append(go.Scatter(
             x = x1.reshape(-1),
             y = lr.predict(x1),
-            mode = 'lines'
+            mode = 'lines',
+            line = dict(
+        color = ('rgb(0, 0, 0)'),
+        width = 4,
+        dash = 'dash')
         ))
     
 
