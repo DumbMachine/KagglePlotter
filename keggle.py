@@ -1,5 +1,65 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Jan  6 03:08:49 2019
+
+@author: ratin
+"""
+
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output
+import plotly.graph_objs as go
+import pandas as pd
+from subprocess import check_output
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+
+print("asd")
+#-----------------------------------------------------------------------------
+
+
+
+
+#TODO cjeck if files already exists
+def downloader(name):
+    if name.split()[0]=='kaggle': ##Implies API call
+        try:
+            try:
+                os.mkdir(name.split()[4:][0])
+                os.chdir(name.split()[4:][0])
+            except: 
+                print("Error Occured")
+                return
+            print(check_output(name , shell=True).decode())
+        except:
+            print("Some unknown err occured")
+            return
+    else:
+        print("passed parameter should start with \"kaggle\"")
+
+def reader(name):
+    data_to_plot = []
+    files = os.listdir(".")
+    for file in files:
+        if "test" in file or "train" in file:
+            data_to_plot.append(file)
+    print(os.getcwd(), " in function")
+    return data_to_plot
+    
+name = 'kaggle competitions download -c house-prices-advanced-regression-techniques'
+downloader(name)
+files = reader(name)
+print(os.getcwd(), " out function")
+
 app = dash.Dash()
-df = pd.read_csv("winequalityN.csv")
+#df = pd.read_csv("winequalityN.csv")
+
+df = pd.read_csv(files[1])
 
 drop1_options = []
 drop2_options = []
@@ -85,12 +145,14 @@ def update_figure(tipe,column1,column2,radio):
         x = x,
         y = y,
         mode= "lines",
-        line = dict(
-        color = ('rgb(0, 0, 0)'),
-        width = 4,
-        dash = 'dash')
-        )
-    )
+        line={
+                'size': 3*df["alcohol"], #TODO: 3*df[choice_column]
+                'color' : df["alcohol"],
+                'opacity': 0.3,
+                'showscale' : True,
+                'line': {'width': 0.5, 'color': 'white'}
+            }
+    ))
         
         
     if radio =="ShowLine":
@@ -127,3 +189,6 @@ def update_figure(tipe,column1,column2,radio):
 if __name__=="__main__":
     app.run_server()
     
+    
+
+
